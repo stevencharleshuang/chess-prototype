@@ -1,0 +1,45 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+
+}
+
+body {
+  font-family: 'Courier New', Courier, monospace;
+  text-align: center;
+  margin: 0 auto;
+}
+
+.game-area {
+  padding: 0;
+  margin: 0 auto;
+  width: 800px;
+  height: 800px;
+  background: rgba(0, 0, 0, .3);
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.board-square {}
+.board-square:hover {
+  border: 5px solid dodgerblue;
+}
+
+.white-square {
+  margin: 0;
+  padding: 0;
+  width: 100px;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.black-square {
+  margin: 0;
+  padding: 0;
+  width: 100px;
+  height: 100px;
+  background: rgba(0, 0, 0, 0.8);
+}
+
