@@ -1,10 +1,17 @@
 $(document).ready(() => {
   // JQ Selectors
-  let $gameArea = $('.game-area');
-  let $boardSq;
+  let $gameArea = $('.game-area'),
+    $gameBoard,
+    $boardSq,
+    $piece,
+    $destinationSquare;
+    
+  let movesArr = [];
   
   // Make the board
   const createBoard = () => {
+    $gameArea.append(`<div class="game-board" />`);
+    $gameBoard = $('.game-board');
     let prevWhite = false;
     let numNum = 8;
     let alphaNum = 97;
@@ -15,7 +22,7 @@ $(document).ready(() => {
       }
 
       if (!prevWhite) {
-        $gameArea.append(`
+        $gameBoard.append(`
           <div 
             class="board-square white-square" 
             id="board-square-${String.fromCharCode(alphaNum)}${numNum}"
@@ -26,7 +33,7 @@ $(document).ready(() => {
           </div>`);
         prevWhite = true;
       } else {
-        $gameArea.append(`
+        $gameBoard.append(`
           <div 
             class="board-square black-square"
             id="board-square-${String.fromCharCode(alphaNum)}${numNum}"
@@ -44,14 +51,16 @@ $(document).ready(() => {
       }
 
       alphaNum += 1;
+      $boardSq = $('.board-square');
     }
 
-    $boardSq = $('.board-square');
-
-    let movesArr = [];
-    let $piece, $destinationSquare;
-
     // Event Handlers
+    // Clicks
+
+    // Reset Game
+    $('.reset-btn').on('click', resetBoard);
+
+    // Game Moves
     $($boardSq).on('click', (e) => {
       // console.log(e);
       if (e.target.className.split(' ').indexOf('piece') > -1 && 
@@ -138,7 +147,11 @@ $(document).ready(() => {
     destination.append(piece);
   };
 
-  
+  const resetBoard = () => {
+    $($gameBoard).remove();
+    createBoard();
+    createChessPieces();
+  }
 
   // Boilerplate Function Invocations
   createBoard();
