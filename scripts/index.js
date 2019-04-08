@@ -18,7 +18,7 @@ $(document).ready(() => {
         $gameArea.append(`
           <div 
             class="board-square white-square" 
-            id="${String.fromCharCode(alphaNum)}${numNum}"
+            id="board-square-${String.fromCharCode(alphaNum)}${numNum}"
             data-num="${i}" 
             data-row="${numNum}" 
             data-col="${String.fromCharCode(alphaNum)}" 
@@ -29,7 +29,7 @@ $(document).ready(() => {
         $gameArea.append(`
           <div 
             class="board-square black-square"
-            id="${String.fromCharCode(alphaNum)}${numNum}"
+            id="board-square-${String.fromCharCode(alphaNum)}${numNum}"
             data-num="${i}" 
             data-row="${numNum}" 
             data-col="${String.fromCharCode(alphaNum)}" 
@@ -49,30 +49,35 @@ $(document).ready(() => {
     $boardSq = $('.board-square');
 
     let movesArr = [];
-    let $piece;
+    let $piece, $destinationSquare;
 
     // Event Handlers
     $($boardSq).on('click', (e) => {
-      console.log(e);
-      if (e.target.id.length > 4) {
-        $piece = e.target.id;
+      // console.log(e);
+      if (e.target.className.split(' ').indexOf('piece') > -1 && 
+        movesArr.length === 0) 
+      {
+        // console.log('Piece Selected: ', e.target.id);
+        $piece = $(`#${e.target.id}`);
+        movesArr.push($piece);
       }
+
+      if (e.target.className.split(' ').indexOf('board-square') > -1 &&
+        movesArr.length === 1 &&
+        e.target.dataset.id !== $piece[0].dataset.location) 
+      {
+        // console.log('Destination Square Selected: ', movesArr[0], '$piece:', $piece[0].dataset.location);
+        $destinationSquare = $(`#${e.target.id}`)
+        movesArr.push($destinationSquare);
+
+        movePiece(...movesArr);
+
+        movesArr = [];
+      };
       
       if (movesArr.length > 2) {
         movesArr = [];
       }
-
-      movesArr.push(e.target.dataset.id);
-
-      if (movesArr.length === 2) {
-        let start = movesArr[0];
-        let end = movesArr[1];
-        console.log('Piece Movin Ova Hea', { start, end, $piece });
-        movePiece(start, end, $piece);
-      }
-
-      console.log({$piece});
-      console.log(e.target.dataset.id);
 
     });
   };
@@ -85,53 +90,52 @@ $(document).ready(() => {
       
       // Place Pawns
       if (row === 7) {
-        $($boardSq[i]).append(`<div class="pawn black-pawn" data-piece-type="pawn" id="pawn-${col}${row}">BP</div>`);
+        $($boardSq[i]).append(`<div class="piece piece-black pawn black-pawn" data-piece-type="pawn" data-location="${col}${row}" id="pawn-${col}${row}">BP</div>`);
       } else if (row === 2) {
-        $($boardSq[i]).append(`<div class="pawn white-pawn" data-piece-type="pawn" id="pawn-${col}${row}">WP</div>`);
+        $($boardSq[i]).append(`<div class="piece piece-white pawn white-pawn" data-piece-type="pawn" data-location="${col}${row}" id="pawn-${col}${row}">WP</div>`);
       }
 
       // Place Kings
       if (row === 8 && col === 'e') {
-        $($boardSq[i]).append(`<div class="king black-king" data-piece-type="" id="king-${col}${row}">BK</div>`);
+        $($boardSq[i]).append(`<div class="piece piece-black king black-king" data-piece-type="king" data-location="${col}${row}" id="king-${col}${row}">BK</div>`);
       } else if (row === 1 && col === 'e') {
-        $($boardSq[i]).append(`<div class="king white-king" data-piece-type="" id="king-${col}${row}">WK</div>`);
+        $($boardSq[i]).append(`<div class="piece piece-white king white-king" data-piece-type="king" data-location="${col}${row}" id="king-${col}${row}">WK</div>`);
       }
 
       // Place Queens
       if (row === 8 && col === 'd') {
-        $($boardSq[i]).append(`<div class="queen black-queen" data-piece-type="" id="queen-${col}${row}">BQ</div>`);
+        $($boardSq[i]).append(`<div class="piece piece-black queen black-queen" data-piece-type="queen" data-location="${col}${row}" id="queen-${col}${row}">BQ</div>`);
       } else if (row === 1 && col === 'd') {
-        $($boardSq[i]).append(`<div class="queen white-queen" data-piece-type="" id="queen-${col}${row}">WQ</div>`);
+        $($boardSq[i]).append(`<div class="piece piece-white queen white-queen" data-piece-type="queen" data-location="${col}${row}" id="queen-${col}${row}">WQ</div>`);
       }
 
       // Place Bishops
       if (row === 8 && (col === 'c' || col === 'f')) {
-        $($boardSq[i]).append(`<div class="bishop black-bishop" data-piece-type="" id="bishop-${col}${row}">BB</div>`);
+        $($boardSq[i]).append(`<div class="piece piece-black bishop black-bishop" data-piece-type="bishop" data-location="${col}${row}" id="bishop-${col}${row}">BB</div>`);
       } else if (row === 1 && (col === 'c' || col === 'f')) {
-        $($boardSq[i]).append(`<div class="bishop white-bishop" data-piece-type="" id="bishop-${col}${row}">WB</div>`);
+        $($boardSq[i]).append(`<div class="piece piece-white bishop white-bishop" data-piece-type="bishop" data-location="${col}${row}" id="bishop-${col}${row}">WB</div>`);
       }     
 
       // Place Knights
       if (row === 8 && (col === 'b' || col === 'g')) {
-        $($boardSq[i]).append(`<div class="knight black-knight" data-piece-type="" id="knight-${col}${row}">BK</div>`);
+        $($boardSq[i]).append(`<div class="piece piece-black knight black-knight" data-piece-type="knight" data-location="${col}${row}" id="knight-${col}${row}">BK</div>`);
       } else if (row === 1 && (col === 'b' || col === 'g')) {
-        $($boardSq[i]).append(`<div class="knight white-knight" data-piece-type="" id="knight-${col}${row}">WK</div>`);
+        $($boardSq[i]).append(`<div class="piece piece-white knight white-knight" data-piece-type="knight" data-location="${col}${row}" id="knight-${col}${row}">WK</div>`);
       }    
 
       // Place Rooks
       if (row === 8 && (col === 'a' || col === 'h')) {
-        $($boardSq[i]).append(`<div class="rook black-rook" data-piece-type="" id="rook-${col}${row}">BR</div>`);
+        $($boardSq[i]).append(`<div class="piece piece-black rook black-rook" data-piece-type="rook" data-location="${col}${row}" id="rook-${col}${row}">BR</div>`);
       } else if (row === 1 && (col === 'a' || col === 'h')) {
-        $($boardSq[i]).append(`<div class="rook white-rook" data-piece-type="" id="rook-${col}${row}">WR</div>`);
+        $($boardSq[i]).append(`<div class="piece piece-white rook white-rook" data-piece-type="rook" data-location="${col}${row}" id="rook-${col}${row}">WR</div>`);
       }    
     }
   };
 
-  const movePiece = (start, end, piece) => {
-    let $pieceMovin = $(`#${piece}`)[0];
-    let endSq = document.querySelector(`#${end}`);
-    console.log({start, end, endSq, piece, $pieceMovin });
-    endSq.append($pieceMovin);
+  const movePiece = (piece, destination) => {
+    console.log('movePiece() called! Args: ', piece, destination);
+    $(piece).attr('data-location', `${destination[0].dataset.id}`);
+    destination.append(piece);
   };
 
   

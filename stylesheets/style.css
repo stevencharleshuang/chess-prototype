@@ -22,7 +22,12 @@ body {
   flex-flow: row wrap;
 }
 
-.board-square {}
+.board-square {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .board-square:hover {
   border: 5px solid dodgerblue;
 }
@@ -43,3 +48,25 @@ body {
   background: rgba(0, 0, 0, 0.8);
 }
 
+.piece {
+  width: 80px;
+  height: 80px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.piece-white {
+  background: white;
+  color: black;
+}
+
+.piece-black {
+  background: black;
+  color: white;
+}
+
+.piece:hover {
+  cursor: pointer;
+}
