@@ -1,6 +1,8 @@
 $(document).ready(() => {
   // JQ Selectors
-  let $gameArea = $('.game-area'),
+  let 
+    $gameArea = $('.game-area'),
+    $messageBox = $('.message-box'),
     $gameBoard,
     $boardSq,
     $piece,
@@ -74,6 +76,13 @@ $(document).ready(() => {
         $piece = $(`#${e.target.id}`);
         movesArr.push($piece);
         // Piece selection visual feedback
+        $($piece).css({'border': '5px solid green'});
+      }
+      
+      if (movesArr.length === 1 && e.target.className.split(' ').indexOf('piece') > -1 && e.target.dataset.color === playerTurn) {
+        $($piece).css({'border': 'none'});
+        $piece = $(`#${e.target.id}`);
+        movesArr[0] = $piece;
         $($piece).css({'border': '5px solid green'});
       }
 
@@ -244,12 +253,22 @@ $(document).ready(() => {
     }
   };
 
+  const updateMsgBox = (msg) => {
+    $($messageBox).text(msg);
+  };
+
   const movePiece = (piece, destination) => {
     // console.log('movePiece() called! Args: ', piece, destination);
     $(piece).attr('data-location', `${destination[0].dataset.id}`);
     $(piece).css({ 'border': 'none' });
     destination.append(piece);
-    return playerTurn === 'white' ? playerTurn = 'black' : playerTurn = 'white';
+    if (playerTurn === 'white') {
+      playerTurn = 'black';
+      updateMsgBox(`Black's move`)
+    } else {
+      playerTurn = 'white';
+      updateMsgBox(`White's move`);
+    }
   };
 
   const resetBoard = () => {
@@ -257,9 +276,12 @@ $(document).ready(() => {
     createBoard();
     createChessPieces();
     movesArr = [];
+    playerTurn = 'white';
+    updateMsgBox(`White's move`);
   }
-
+  
   // Boilerplate Function Invocations
   createBoard();
   createChessPieces();
+  updateMsgBox(`White's move`);
 });
