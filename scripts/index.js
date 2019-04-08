@@ -7,6 +7,7 @@ $(document).ready(() => {
     $destinationSquare;
 
   let movesArr = [];
+  let playerTurn = 'white';
   
   // Make the board
   const createBoard = () => {
@@ -66,7 +67,8 @@ $(document).ready(() => {
 
       // Piece Selection
       if (e.target.className.split(' ').indexOf('piece') > -1 && 
-        movesArr.length === 0) 
+        movesArr.length === 0 &&
+        e.target.dataset.color === playerTurn) 
       {
         // console.log('Piece Selected: ', e.target.id);
         $piece = $(`#${e.target.id}`);
@@ -247,6 +249,7 @@ $(document).ready(() => {
     $(piece).attr('data-location', `${destination[0].dataset.id}`);
     $(piece).css({ 'border': 'none' });
     destination.append(piece);
+    return playerTurn === 'white' ? playerTurn = 'black' : playerTurn = 'white';
   };
 
   const resetBoard = () => {
