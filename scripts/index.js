@@ -5,7 +5,7 @@ $(document).ready(() => {
     $boardSq,
     $piece,
     $destinationSquare;
-    
+
   let movesArr = [];
   
   // Make the board
@@ -69,6 +69,8 @@ $(document).ready(() => {
         // console.log('Piece Selected: ', e.target.id);
         $piece = $(`#${e.target.id}`);
         movesArr.push($piece);
+
+        $($piece).css({'border': '5px solid green'});
       }
 
       if (e.target.className.split(' ').indexOf('board-square') > -1 &&
@@ -83,7 +85,7 @@ $(document).ready(() => {
 
         movesArr = [];
       };
-      
+
       if (movesArr.length > 2) {
         movesArr = [];
       }
@@ -99,44 +101,44 @@ $(document).ready(() => {
       
       // Place Pawns
       if (row === 7) {
-        $($boardSq[i]).append(`<div class="piece piece-black pawn black-pawn" data-piece-type="pawn" data-location="${col}${row}" id="pawn-${col}${row}">BP</div>`);
+        $($boardSq[i]).append(`<div class="piece piece-black pawn black-pawn" data-color="black" data-piece-type="pawn" data-location="${col}${row}" id="pawn-${col}${row}">BP</div>`);
       } else if (row === 2) {
-        $($boardSq[i]).append(`<div class="piece piece-white pawn white-pawn" data-piece-type="pawn" data-location="${col}${row}" id="pawn-${col}${row}">WP</div>`);
+        $($boardSq[i]).append(`<div class="piece piece-white pawn white-pawn" data-color="white" data-piece-type="pawn" data-location="${col}${row}" id="pawn-${col}${row}">WP</div>`);
       }
 
       // Place Kings
       if (row === 8 && col === 'e') {
-        $($boardSq[i]).append(`<div class="piece piece-black king black-king" data-piece-type="king" data-location="${col}${row}" id="king-${col}${row}">BK</div>`);
+        $($boardSq[i]).append(`<div class="piece piece-black king black-king" data-color="black" data-piece-type="king" data-location="${col}${row}" id="king-${col}${row}">BK</div>`);
       } else if (row === 1 && col === 'e') {
-        $($boardSq[i]).append(`<div class="piece piece-white king white-king" data-piece-type="king" data-location="${col}${row}" id="king-${col}${row}">WK</div>`);
+        $($boardSq[i]).append(`<div class="piece piece-white king white-king" data-color="white" data-piece-type="king" data-location="${col}${row}" id="king-${col}${row}">WK</div>`);
       }
 
       // Place Queens
       if (row === 8 && col === 'd') {
-        $($boardSq[i]).append(`<div class="piece piece-black queen black-queen" data-piece-type="queen" data-location="${col}${row}" id="queen-${col}${row}">BQ</div>`);
+        $($boardSq[i]).append(`<div class="piece piece-black queen black-queen" data-color="black" data-piece-type="queen" data-location="${col}${row}" id="queen-${col}${row}">BQ</div>`);
       } else if (row === 1 && col === 'd') {
-        $($boardSq[i]).append(`<div class="piece piece-white queen white-queen" data-piece-type="queen" data-location="${col}${row}" id="queen-${col}${row}">WQ</div>`);
+        $($boardSq[i]).append(`<div class="piece piece-white queen white-queen" data-color="white" data-piece-type="queen" data-location="${col}${row}" id="queen-${col}${row}">WQ</div>`);
       }
 
       // Place Bishops
       if (row === 8 && (col === 'c' || col === 'f')) {
-        $($boardSq[i]).append(`<div class="piece piece-black bishop black-bishop" data-piece-type="bishop" data-location="${col}${row}" id="bishop-${col}${row}">BB</div>`);
+        $($boardSq[i]).append(`<div class="piece piece-black bishop black-bishop" data-color="black" data-piece-type="bishop" data-location="${col}${row}" id="bishop-${col}${row}">BB</div>`);
       } else if (row === 1 && (col === 'c' || col === 'f')) {
-        $($boardSq[i]).append(`<div class="piece piece-white bishop white-bishop" data-piece-type="bishop" data-location="${col}${row}" id="bishop-${col}${row}">WB</div>`);
+        $($boardSq[i]).append(`<div class="piece piece-white bishop white-bishop" data-color="white" data-piece-type="bishop" data-location="${col}${row}" id="bishop-${col}${row}">WB</div>`);
       }     
 
       // Place Knights
       if (row === 8 && (col === 'b' || col === 'g')) {
-        $($boardSq[i]).append(`<div class="piece piece-black knight black-knight" data-piece-type="knight" data-location="${col}${row}" id="knight-${col}${row}">BK</div>`);
+        $($boardSq[i]).append(`<div class="piece piece-black knight black-knight" data-color="black" data-piece-type="knight" data-location="${col}${row}" id="knight-${col}${row}">BK</div>`);
       } else if (row === 1 && (col === 'b' || col === 'g')) {
-        $($boardSq[i]).append(`<div class="piece piece-white knight white-knight" data-piece-type="knight" data-location="${col}${row}" id="knight-${col}${row}">WK</div>`);
+        $($boardSq[i]).append(`<div class="piece piece-white knight white-knight" data-color="white" data-piece-type="knight" data-location="${col}${row}" id="knight-${col}${row}">WK</div>`);
       }    
 
       // Place Rooks
       if (row === 8 && (col === 'a' || col === 'h')) {
-        $($boardSq[i]).append(`<div class="piece piece-black rook black-rook" data-piece-type="rook" data-location="${col}${row}" id="rook-${col}${row}">BR</div>`);
+        $($boardSq[i]).append(`<div class="piece piece-black rook black-rook" data-color="black" data-piece-type="rook" data-location="${col}${row}" id="rook-${col}${row}">BR</div>`);
       } else if (row === 1 && (col === 'a' || col === 'h')) {
-        $($boardSq[i]).append(`<div class="piece piece-white rook white-rook" data-piece-type="rook" data-location="${col}${row}" id="rook-${col}${row}">WR</div>`);
+        $($boardSq[i]).append(`<div class="piece piece-white rook white-rook" data-color="white" data-piece-type="rook" data-location="${col}${row}" id="rook-${col}${row}">WR</div>`);
       }    
     }
   };
@@ -144,6 +146,7 @@ $(document).ready(() => {
   const movePiece = (piece, destination) => {
     console.log('movePiece() called! Args: ', piece, destination);
     $(piece).attr('data-location', `${destination[0].dataset.id}`);
+    $(piece).css({ 'border': 'none' });
     destination.append(piece);
   };
 
@@ -151,6 +154,7 @@ $(document).ready(() => {
     $($gameBoard).remove();
     createBoard();
     createChessPieces();
+    movesArr = [];
   }
 
   // Boilerplate Function Invocations
