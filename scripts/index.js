@@ -96,10 +96,36 @@ $(document).ready(() => {
         // Piece can't move to it's own square
         e.target.dataset.id !== $piece[0].dataset.location) 
       {
+        let moveIsLegal = false;
+
+        switch ($piece[0].dataset.type) {
+          case 'pawn': 
+            console.log('moved a pawn');
+            moveIsLegal = checkMove.pawn($piece[0].dataset.location, e.target.dataset.id, $piece[0].dataset.color);
+            break;
+          case 'king':
+            console.log('moved the king');
+            break;
+          case 'queen':
+            console.log('moved the queen');
+            break;
+          case 'bishop':
+            console.log('moved a bishop');
+            break;
+          case 'knight':
+            console.log('moved a knight');
+            break;
+          case 'rook':
+            console.log('moved a rook');
+            break;
+          default:
+            break;
+        };
+
         $destinationSquare = $(`#${e.target.id}`)
         movesArr.push($destinationSquare);
 
-        movePiece(...movesArr);
+        moveIsLegal ? movePiece(...movesArr) : updateMsgBox('Move is illegal', true);
 
         movesArr = [];
       };
@@ -123,7 +149,7 @@ $(document).ready(() => {
           <div 
           class="piece piece-black pawn black-pawn" 
           data-color="black" 
-          data-piece-type="pawn" 
+          data-type="pawn" 
           data-location="${col}${row}" 
           id="pawn-${col}${row}">
             BP
@@ -133,7 +159,7 @@ $(document).ready(() => {
           <div 
           class="piece piece-white pawn white-pawn" 
           data-color="white" 
-          data-piece-type="pawn" 
+          data-type="pawn" 
           data-location="${col}${row}" 
           id="pawn-${col}${row}">
             WP
@@ -146,7 +172,7 @@ $(document).ready(() => {
           <div 
           class="piece piece-black king black-king" 
           data-color="black" 
-          data-piece-type="king" 
+          data-type="king" 
           data-location="${col}${row}" 
           id="king-${col}${row}">
             BK
@@ -156,7 +182,7 @@ $(document).ready(() => {
           <div 
           class="piece piece-white king white-king" 
           data-color="white" 
-          data-piece-type="king" 
+          data-type="king" 
           data-location="${col}${row}" 
           id="king-${col}${row}">
             WK
@@ -169,7 +195,7 @@ $(document).ready(() => {
           <div 
           class="piece piece-black queen black-queen" 
           data-color="black" 
-          data-piece-type="queen" 
+          data-type="queen" 
           data-location="${col}${row}" 
           id="queen-${col}${row}">
             BQ
@@ -179,7 +205,7 @@ $(document).ready(() => {
           <div 
           class="piece piece-white queen white-queen" 
           data-color="white" 
-          data-piece-type="queen" 
+          data-type="queen" 
           data-location="${col}${row}" 
           id="queen-${col}${row}">
             WQ
@@ -192,7 +218,7 @@ $(document).ready(() => {
           <div 
           class="piece piece-black bishop black-bishop" 
           data-color="black" 
-          data-piece-type="bishop" 
+          data-type="bishop" 
           data-location="${col}${row}" 
           id="bishop-${col}${row}">
             BB
@@ -202,7 +228,7 @@ $(document).ready(() => {
           <div 
           class="piece piece-white bishop white-bishop" 
           data-color="white" 
-          data-piece-type="bishop" 
+          data-type="bishop" 
           data-location="${col}${row}" 
           id="bishop-${col}${row}">
             WB
@@ -215,7 +241,7 @@ $(document).ready(() => {
           <div 
           class="piece piece-black knight black-knight" 
           data-color="black" 
-          data-piece-type="knight" 
+          data-type="knight" 
           data-location="${col}${row}" 
           id="knight-${col}${row}">
             BK
@@ -225,7 +251,7 @@ $(document).ready(() => {
           <div 
           class="piece piece-white knight white-knight" 
           data-color="white" 
-          data-piece-type="knight" 
+          data-type="knight" 
           data-location="${col}${row}" 
           id="knight-${col}${row}">
             WK
@@ -238,7 +264,7 @@ $(document).ready(() => {
           <div 
           class="piece piece-black rook black-rook" 
           data-color="black" 
-          data-piece-type="rook" 
+          data-type="rook" 
           data-location="${col}${row}" 
           id="rook-${col}${row}">
             BR
@@ -248,7 +274,7 @@ $(document).ready(() => {
           <div 
           class="piece piece-white rook white-rook" 
           data-color="white" 
-          data-piece-type="rook" 
+          data-type="rook" 
           data-location="${col}${row}" 
           id="rook-${col}${row}">
             WR
@@ -257,8 +283,14 @@ $(document).ready(() => {
     }
   };
 
-  const updateMsgBox = (msg) => {
-    $($messageBox).text(msg);
+  const updateMsgBox = (msg, temporary = false) => {
+    let $previousMsg = $($messageBox).text();
+    if (temporary) {
+      $($messageBox).text(msg);
+      setTimeout(() => $($messageBox).text($previousMsg), 1000);
+    } else {
+      $($messageBox).text(msg);
+    }
   };
 
   const movePiece = (piece, destination) => {
@@ -288,4 +320,6 @@ $(document).ready(() => {
   createBoard();
   createChessPieces();
   updateMsgBox(`White's move`);
+
+
 });
