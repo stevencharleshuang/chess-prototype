@@ -79,7 +79,11 @@ $(document).ready(() => {
         $($piece).css({'border': '5px solid green'});
       }
       
-      if (movesArr.length === 1 && e.target.className.split(' ').indexOf('piece') > -1 && e.target.dataset.color === playerTurn) {
+      // Allows player to change the piece that they want to move
+      if (movesArr.length === 1 && 
+        e.target.className.split(' ').indexOf('piece') > -1 && 
+        e.target.dataset.color === playerTurn) 
+      {
         $($piece).css({'border': 'none'});
         $piece = $(`#${e.target.id}`);
         movesArr[0] = $piece;
@@ -264,7 +268,7 @@ $(document).ready(() => {
     destination.append(piece);
     if (playerTurn === 'white') {
       playerTurn = 'black';
-      updateMsgBox(`Black's move`)
+      updateMsgBox(`Black's move`);
     } else {
       playerTurn = 'white';
       updateMsgBox(`White's move`);
