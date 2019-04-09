@@ -32,6 +32,8 @@ $(document).ready(() => {
             data-num="${i}" 
             data-row="${numNum}" 
             data-col="${String.fromCharCode(alphaNum)}" 
+            data-type="square" 
+            data-location="${String.fromCharCode(alphaNum)}${numNum}"
             data-id="${String.fromCharCode(alphaNum)}${numNum}">
           </div>`);
         prevWhite = true;
@@ -43,6 +45,8 @@ $(document).ready(() => {
             data-num="${i}" 
             data-row="${numNum}" 
             data-col="${String.fromCharCode(alphaNum)}" 
+            data-type="square" 
+            data-location="${String.fromCharCode(alphaNum)}${numNum}"
             data-id="${String.fromCharCode(alphaNum)}${numNum}">
           </div>`);
         prevWhite = false;
@@ -64,79 +68,100 @@ $(document).ready(() => {
     $('.reset-btn').on('click', resetBoard);
 
     // Game Moves
-    $($boardSq).on('click', (e) => {
-      // console.log(e);
-
-      // Piece Selection
-      if (e.target.className.split(' ').indexOf('piece') > -1 && 
-        movesArr.length === 0 &&
-        e.target.dataset.color === playerTurn) 
-      {
-        // console.log('Piece Selected: ', e.target.id);
-        $piece = $(`#${e.target.id}`);
-        movesArr.push($piece);
-        // Piece selection visual feedback
-        $($piece).css({'border': '5px solid green'});
-      }
-      
-      // Allows player to change the piece that they want to move
-      if (movesArr.length === 1 && 
-        e.target.className.split(' ').indexOf('piece') > -1 && 
-        e.target.dataset.color === playerTurn) 
-      {
-        $($piece).css({'border': 'none'});
-        $piece = $(`#${e.target.id}`);
-        movesArr[0] = $piece;
-        $($piece).css({'border': '5px solid green'});
-      }
-
-      // Square Selection
-      if (e.target.className.split(' ').indexOf('board-square') > -1 &&
-        movesArr.length === 1 &&
-        // Piece can't move to it's own square
-        e.target.dataset.id !== $piece[0].dataset.location) 
-      {
-        let moveIsLegal = false;
-
-        switch ($piece[0].dataset.type) {
-          case 'pawn': 
-            console.log('moved a pawn');
-            moveIsLegal = checkMove.pawn($piece[0].dataset.location, e.target.dataset.id, $piece[0].dataset.color);
-            break;
-          case 'king':
-            console.log('moved the king');
-            break;
-          case 'queen':
-            console.log('moved the queen');
-            break;
-          case 'bishop':
-            console.log('moved a bishop');
-            break;
-          case 'knight':
-            console.log('moved a knight');
-            break;
-          case 'rook':
-            console.log('moved a rook');
-            break;
-          default:
-            break;
-        };
-
-        $destinationSquare = $(`#${e.target.id}`)
-        movesArr.push($destinationSquare);
-
-        moveIsLegal ? movePiece(...movesArr) : updateMsgBox('Move is illegal', true);
-
-        $($piece).css({ 'border': 'none' });
-        movesArr = [];
-      };
-
-      // Failsafe
-      if (movesArr.length > 2) {
-        movesArr = [];
-      }
-    });
+    $($boardSq).on('click', handleMoves);
+    $('.piece').on('click', handleMoves);
   };
+  
+  const handleMoves = (e) => {
+    // console.log(e);
+    // Piece Selection
+    if (e.target.className.split(' ').indexOf('piece') > -1 &&
+      movesArr.length === 0 &&
+      e.target.dataset.color === playerTurn) {
+      // console.log('Piece Selected: ', e.target.id);
+      $piece = $(`#${e.target.id}`);
+      movesArr.push($piece);
+      // Piece selection visual feedback
+      $($piece).css({
+        'border': '5px solid green'
+      });
+    }
+  
+    // Allows player to change the piece that they want to move
+    else if (movesArr.length === 1 &&
+      e.target.className.split(' ').indexOf('piece') > -1 &&
+      e.target.dataset.color === playerTurn) {
+      $($piece).css({
+        'border': 'none'
+      });
+      $piece = $(`#${e.target.id}`);
+      movesArr[0] = $piece;
+      $($piece).css({
+        'border': '5px solid green'
+      });
+    }
+  
+    // Square Selection
+    else if (movesArr.length === 1 && 
+      (e.target.className.split(' ').indexOf('board-square') > -1 ||
+        e.target.className.split(' ').indexOf('piece') > -1) &&
+      // Piece can't move to it's own square
+      e.target.dataset.id !== $piece[0].dataset.location) {
+
+      let moveIsLegal = false;
+  
+      switch ($piece[0].dataset.piece) {
+        case 'pawn':
+          console.log('moved a pawn', e);
+          moveIsLegal =
+            checkMove.pawn(
+              $piece[0].dataset.location,
+              e.target.dataset.location,
+              $piece[0].dataset.color,
+              e.currentTarget.firstElementChild
+            );
+          break;
+        case 'king':
+          console.log('moved the king');
+          break;
+        case 'queen':
+          console.log('moved the queen');
+          break;
+        case 'bishop':
+          console.log('moved a bishop');
+          break;
+        case 'knight':
+          console.log('moved a knight');
+          break;
+        case 'rook':
+          console.log('moved a rook');
+          break;
+        default:
+          break;
+      };
+  
+      $destinationSquare = $(`#${e.target.id}`)
+  
+      if (moveIsLegal) {
+        console.log('legal move');
+        movesArr.push($destinationSquare);
+        movePiece(...movesArr);
+      } else {
+        console.log('illegal move');
+        updateMsgBox('Move is illegal', true);
+      }
+  
+      $($piece).css({
+        'border': 'none'
+      });
+      movesArr = [];
+    };
+  
+    // Failsafe
+    if (movesArr.length > 2) {
+      movesArr = [];
+    }
+  }
   
   // Add the pieces
   const createChessPieces = () => {
@@ -150,7 +175,8 @@ $(document).ready(() => {
           <div 
           class="piece piece-black pawn black-pawn" 
           data-color="black" 
-          data-type="pawn" 
+          data-type="piece" 
+          data-piece="pawn" 
           data-location="${col}${row}" 
           id="pawn-${col}${row}">
             BP
@@ -160,7 +186,8 @@ $(document).ready(() => {
           <div 
           class="piece piece-white pawn white-pawn" 
           data-color="white" 
-          data-type="pawn" 
+          data-type="piece" 
+          data-piece="pawn" 
           data-location="${col}${row}" 
           id="pawn-${col}${row}">
             WP
@@ -173,7 +200,8 @@ $(document).ready(() => {
           <div 
           class="piece piece-black king black-king" 
           data-color="black" 
-          data-type="king" 
+          data-type="piece" 
+          data-piece="king" 
           data-location="${col}${row}" 
           id="king-${col}${row}">
             BK
@@ -183,7 +211,8 @@ $(document).ready(() => {
           <div 
           class="piece piece-white king white-king" 
           data-color="white" 
-          data-type="king" 
+          data-type="piece" 
+          data-piece="king" 
           data-location="${col}${row}" 
           id="king-${col}${row}">
             WK
@@ -196,7 +225,8 @@ $(document).ready(() => {
           <div 
           class="piece piece-black queen black-queen" 
           data-color="black" 
-          data-type="queen" 
+          data-type="piece" 
+          data-piece="queen" 
           data-location="${col}${row}" 
           id="queen-${col}${row}">
             BQ
@@ -206,7 +236,8 @@ $(document).ready(() => {
           <div 
           class="piece piece-white queen white-queen" 
           data-color="white" 
-          data-type="queen" 
+          data-type="piece" 
+          data-piece="queen" 
           data-location="${col}${row}" 
           id="queen-${col}${row}">
             WQ
@@ -219,7 +250,8 @@ $(document).ready(() => {
           <div 
           class="piece piece-black bishop black-bishop" 
           data-color="black" 
-          data-type="bishop" 
+          data-type="piece" 
+          data-piece="bishop" 
           data-location="${col}${row}" 
           id="bishop-${col}${row}">
             BB
@@ -229,7 +261,8 @@ $(document).ready(() => {
           <div 
           class="piece piece-white bishop white-bishop" 
           data-color="white" 
-          data-type="bishop" 
+          data-type="piece" 
+          data-piece="bishop" 
           data-location="${col}${row}" 
           id="bishop-${col}${row}">
             WB
@@ -242,7 +275,8 @@ $(document).ready(() => {
           <div 
           class="piece piece-black knight black-knight" 
           data-color="black" 
-          data-type="knight" 
+          data-type="piece" 
+          data-piece="knight" 
           data-location="${col}${row}" 
           id="knight-${col}${row}">
             BK
@@ -252,7 +286,8 @@ $(document).ready(() => {
           <div 
           class="piece piece-white knight white-knight" 
           data-color="white" 
-          data-type="knight" 
+          data-type="piece" 
+          data-piece="knight" 
           data-location="${col}${row}" 
           id="knight-${col}${row}">
             WK
@@ -265,7 +300,8 @@ $(document).ready(() => {
           <div 
           class="piece piece-black rook black-rook" 
           data-color="black" 
-          data-type="rook" 
+          data-type="piece" 
+          data-piece="rook" 
           data-location="${col}${row}" 
           id="rook-${col}${row}">
             BR
@@ -275,7 +311,8 @@ $(document).ready(() => {
           <div 
           class="piece piece-white rook white-rook" 
           data-color="white" 
-          data-type="rook" 
+          data-type="piece" 
+          data-piece="rook" 
           data-location="${col}${row}" 
           id="rook-${col}${row}">
             WR
@@ -295,10 +332,18 @@ $(document).ready(() => {
   };
 
   const movePiece = (piece, destination) => {
-    // console.log('movePiece() called! Args: ', piece, destination);
-    $(piece).attr('data-location', `${destination[0].dataset.id}`);
-    $(piece).css({ 'border': 'none' });
-    destination.append(piece);
+    console.log('movePiece() called! Args: ', piece, destination);
+    if (destination[0].dataset.type === 'square') {
+      console.log('Regular Move Executed');
+      $(piece).attr('data-location', `${destination[0].dataset.id}`);
+      $(piece).css({ 'border': 'none' });
+      destination.append(piece);
+    } else {
+      console.log('Attack Move Executed');
+      let $currentSq = $(`#board-square-${destination[0].dataset.location}`);
+      $(destination).remove()
+      $($currentSq).append(piece);
+    }
     if (playerTurn === 'white') {
       playerTurn = 'black';
       updateMsgBox(`Black's move`);
@@ -321,6 +366,5 @@ $(document).ready(() => {
   createBoard();
   createChessPieces();
   updateMsgBox(`White's move`);
-
-
 });
+

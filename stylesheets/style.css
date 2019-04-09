@@ -13,10 +13,11 @@ body {
 }
 
 .game-board {
+  border: 2px solid black;
   padding: 0;
   margin: 0 auto;
-  width: 480px;
-  height: 480px;
+  width: 484px;
+  height: 484px;
   background: rgba(0, 0, 0, .3);
   display: flex;
   flex-flow: row wrap;
