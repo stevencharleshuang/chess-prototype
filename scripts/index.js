@@ -127,6 +127,7 @@ $(document).ready(() => {
 
         moveIsLegal ? movePiece(...movesArr) : updateMsgBox('Move is illegal', true);
 
+        $($piece).css({ 'border': 'none' });
         movesArr = [];
       };
 
