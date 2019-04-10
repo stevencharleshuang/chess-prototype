@@ -74,8 +74,12 @@ $(document).ready(() => {
   
   const handleMoves = (e) => {
     // console.log(e);
+    let 
+      target = e.target;
+      targetData = e.target.dataset;
+
     // Piece Selection
-    if (e.target.className.split(' ').indexOf('piece') > -1 &&
+    if (targetData.type === 'piece' &&
       movesArr.length === 0 &&
       e.target.dataset.color === playerTurn) {
       // console.log('Piece Selected: ', e.target.id);
@@ -85,16 +89,14 @@ $(document).ready(() => {
       $($piece).css({
         'border': '5px solid green'
       });
-    }
-  
-    // Allows player to change the piece that they want to move
-    else if (movesArr.length === 1 &&
-      e.target.className.split(' ').indexOf('piece') > -1 &&
-      e.target.dataset.color === playerTurn) {
+      // Allows player to change the piece that they want to move
+    } else if (movesArr.length === 1 &&
+      targetData.type === 'piece' &&
+      targetData.color === playerTurn) {
       $($piece).css({
         'border': 'none'
       });
-      $piece = $(`#${e.target.id}`);
+      $piece = $(`#${target.id}`);
       movesArr[0] = $piece;
       $($piece).css({
         'border': '5px solid green'
@@ -103,8 +105,8 @@ $(document).ready(() => {
   
     // Square Selection
     else if (movesArr.length === 1 && 
-      (e.target.className.split(' ').indexOf('board-square') > -1 ||
-        e.target.className.split(' ').indexOf('piece') > -1) &&
+      (e.target.dataset.type === 'square' ||
+        e.target.dataset.type === 'piece') &&
       // Piece can't move to it's own square
       e.target.dataset.id !== $piece[0].dataset.location) {
 
@@ -116,7 +118,7 @@ $(document).ready(() => {
           moveIsLegal =
             checkMove.pawn(
               $piece[0].dataset.location,
-              e.target.dataset.location,
+              targetData.location,
               $piece[0].dataset.color,
               e.currentTarget.firstElementChild
             );
@@ -140,14 +142,12 @@ $(document).ready(() => {
           break;
       };
   
-      $destinationSquare = $(`#${e.target.id}`)
+      $destinationSquare = $(`#board-square-${targetData.location}`);
   
       if (moveIsLegal) {
-        console.log('legal move');
         movesArr.push($destinationSquare);
         movePiece(...movesArr);
       } else {
-        console.log('illegal move');
         updateMsgBox('Move is illegal', true);
       }
   
@@ -333,15 +333,16 @@ $(document).ready(() => {
 
   const movePiece = (piece, destination) => {
     console.log('movePiece() called! Args: ', piece, destination);
-    if (destination[0].dataset.type === 'square') {
+    if (destination[0].firstElementChild === null) {
       console.log('Regular Move Executed');
-      $(piece).attr('data-location', `${destination[0].dataset.id}`);
+      $(piece).attr('data-location', `${destination[0].dataset.location}`);
       $(piece).css({ 'border': 'none' });
       destination.append(piece);
     } else {
-      console.log('Attack Move Executed');
       let $currentSq = $(`#board-square-${destination[0].dataset.location}`);
-      $(destination).remove()
+      console.log('Attack Move Executed', $currentSq);
+      $(destination[0].firstElementChild).remove();
+      $(piece).attr('data-location', `${destination[0].dataset.location}`);
       $($currentSq).append(piece);
     }
     if (playerTurn === 'white') {
