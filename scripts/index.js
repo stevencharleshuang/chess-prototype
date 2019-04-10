@@ -78,7 +78,7 @@ $(document).ready(() => {
       target = e.target;
       targetData = e.target.dataset;
 
-    // Piece Selection
+    // Handle Primary Selection (piece)
     if (targetData.type === 'piece' &&
       movesArr.length === 0 &&
       e.target.dataset.color === playerTurn) {
@@ -103,7 +103,7 @@ $(document).ready(() => {
       });
     }
   
-    // Square Selection
+    // Handle Secondary Selection (square or piece)
     else if (movesArr.length === 1 && 
       (e.target.dataset.type === 'square' ||
         e.target.dataset.type === 'piece') &&
@@ -332,15 +332,15 @@ $(document).ready(() => {
   };
 
   const movePiece = (piece, destination) => {
-    console.log('movePiece() called! Args: ', piece, destination);
+    // console.log('movePiece() called! Args: ', piece, destination);
     if (destination[0].firstElementChild === null) {
-      console.log('Regular Move Executed');
+      // console.log('Regular Move Executed');
       $(piece).attr('data-location', `${destination[0].dataset.location}`);
       $(piece).css({ 'border': 'none' });
       destination.append(piece);
     } else {
       let $currentSq = $(`#board-square-${destination[0].dataset.location}`);
-      console.log('Attack Move Executed', $currentSq);
+      // console.log('Attack Move Executed', $currentSq);
       $(destination[0].firstElementChild).remove();
       $(piece).attr('data-location', `${destination[0].dataset.location}`);
       $($currentSq).append(piece);

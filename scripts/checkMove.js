@@ -49,10 +49,14 @@ const checkMove = {
     } else {
       // ATTAAAACK
       console.log({target});
-      if (target.dataset.type && target.dataset.color !== color) {
+      if (
+        target.dataset.type && 
+        target.dataset.color !== color &&
+        Math.abs(parseInt(origin[1]) - (parseInt(destination[1]))) === 1 &&
+        Math.abs(origin.charCodeAt(0) - destination.charCodeAt(0)) === 1) {
         return true;
       }
-      return true;
+      // return true;
     }
 
   },
