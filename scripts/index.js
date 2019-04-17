@@ -11,6 +11,21 @@ $(document).ready(() => {
   let movesArr = [];
   let playerTurn = 'white';
   
+  // Unicode Chess Pieces
+  let
+    wPawn = `\u265F`,
+    bPawn = `\u2659`,
+    wKing = `\u265A`,
+    bKing = `\u2654`,
+    wQueen = `\u265B`,
+    bQueen = `\u2655`,
+    wBishop = `\u265D`,
+    bBishop = `\u2657`,
+    wKnight = `\u265E`,
+    bKnight = `\u2658`,
+    bRook = `\u265C`,
+    wRook = `\u2656`;
+
   // Make the board
   const createBoard = () => {
     $gameArea.append(`<div class="game-board" />`);
@@ -73,7 +88,7 @@ $(document).ready(() => {
   };
   
   const handleMoves = (e) => {
-    // console.log(e);
+    console.log(e);
     let 
       target = e.target;
       targetData = e.target.dataset;
@@ -115,12 +130,13 @@ $(document).ready(() => {
       switch ($piece[0].dataset.piece) {
         case 'pawn':
           console.log('moved a pawn', e);
+          // ToDo: Implement En Passant check
           moveIsLegal =
             checkMove.pawn(
               $piece[0].dataset.location,
               targetData.location,
               $piece[0].dataset.color,
-              e.currentTarget.firstElementChild
+              target
             );
           break;
         case 'king':
@@ -130,6 +146,13 @@ $(document).ready(() => {
           console.log('moved the queen');
           break;
         case 'bishop':
+          moveIsLegal = 
+            checkMove.bishop(
+              $piece[0].dataset.location,
+              targetData.location,
+              $piece[0].dataset.color,
+              target
+            );
           console.log('moved a bishop');
           break;
         case 'knight':
@@ -179,7 +202,7 @@ $(document).ready(() => {
           data-piece="pawn" 
           data-location="${col}${row}" 
           id="pawn-${col}${row}">
-            BP
+            ${bPawn}
           </div>`);
       } else if (row === 2) {
         $($boardSq[i]).append(`
@@ -190,7 +213,7 @@ $(document).ready(() => {
           data-piece="pawn" 
           data-location="${col}${row}" 
           id="pawn-${col}${row}">
-            WP
+            ${wPawn}
           </div>`);
       }
 
@@ -204,7 +227,7 @@ $(document).ready(() => {
           data-piece="king" 
           data-location="${col}${row}" 
           id="king-${col}${row}">
-            BK
+            ${bKing}
           </div>`);
       } else if (row === 1 && col === 'e') {
         $($boardSq[i]).append(`
@@ -215,7 +238,7 @@ $(document).ready(() => {
           data-piece="king" 
           data-location="${col}${row}" 
           id="king-${col}${row}">
-            WK
+            ${wKing}
           </div>`);
       }
 
@@ -229,7 +252,7 @@ $(document).ready(() => {
           data-piece="queen" 
           data-location="${col}${row}" 
           id="queen-${col}${row}">
-            BQ
+            ${bQueen}
           </div>`);
       } else if (row === 1 && col === 'd') {
         $($boardSq[i]).append(`
@@ -240,7 +263,7 @@ $(document).ready(() => {
           data-piece="queen" 
           data-location="${col}${row}" 
           id="queen-${col}${row}">
-            WQ
+            ${wQueen}
           </div>`);
       }
 
@@ -254,7 +277,7 @@ $(document).ready(() => {
           data-piece="bishop" 
           data-location="${col}${row}" 
           id="bishop-${col}${row}">
-            BB
+            ${bBishop}
           </div>`);
       } else if (row === 1 && (col === 'c' || col === 'f')) {
         $($boardSq[i]).append(`
@@ -265,7 +288,7 @@ $(document).ready(() => {
           data-piece="bishop" 
           data-location="${col}${row}" 
           id="bishop-${col}${row}">
-            WB
+            ${wBishop}
           </div>`);
       }     
 
@@ -279,7 +302,7 @@ $(document).ready(() => {
           data-piece="knight" 
           data-location="${col}${row}" 
           id="knight-${col}${row}">
-            BK
+            ${bKnight}
           </div>`);
       } else if (row === 1 && (col === 'b' || col === 'g')) {
         $($boardSq[i]).append(`
@@ -290,7 +313,7 @@ $(document).ready(() => {
           data-piece="knight" 
           data-location="${col}${row}" 
           id="knight-${col}${row}">
-            WK
+            ${wKnight}
           </div>`);
       }    
 
@@ -304,7 +327,7 @@ $(document).ready(() => {
           data-piece="rook" 
           data-location="${col}${row}" 
           id="rook-${col}${row}">
-            BR
+            ${wRook}
           </div>`);
       } else if (row === 1 && (col === 'a' || col === 'h')) {
         $($boardSq[i]).append(`
@@ -315,7 +338,7 @@ $(document).ready(() => {
           data-piece="rook" 
           data-location="${col}${row}" 
           id="rook-${col}${row}">
-            WR
+            ${bRook}
           </div>`);
       }    
     }
